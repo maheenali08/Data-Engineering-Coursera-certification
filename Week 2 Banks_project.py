@@ -1,4 +1,3 @@
-
 import pandas as pd 
 import numpy as np 
 from bs4 import BeautifulSoup 
@@ -25,15 +24,16 @@ def extract(url,table_attribs):
     tables = data.find_all('tbody')
     rows = tables[0].find_all('tr')
     for row in rows:
-        col = row.find_all('td')             
-        print(col)
-        if len(col)!=0: 
-            data_dict = {"Name": col[1].contents[1],
-                                "MC_USD_Billion": float(col[2].contents[0])}          
+        if row.find('td') is not None:
+            col = row.find_all('td')             
+            bank_name = col[1].find_all('a')[1]['title']
+            market_cap=col[2].contents[0][:-1]                         
+            data_dict = {"Name": bank_name,
+                        "MC_USD_Billion": float(market_cap)}
+            print(data_dict)      
             df1 = pd.DataFrame(data_dict, index=[0])
             df = pd.concat([df,df1], ignore_index=True)
-            df = df.replace('\n','', regex=True)
-            
+                      
     return df
     
 def transform():
