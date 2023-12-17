@@ -68,4 +68,21 @@ def run_queries(query_statement,sql_connection):
 
 log_progress('Preliminaries complete. Initiating ETL process and calling Extraction')
 
-extract(url,table_attribs)
+df=extract(url,table_attribs)
+log_prgress('Data extraction complete.Initiating Transformation process')
+
+df2=transform(df,csv_path)
+log_progress('Data Transformation complete. Initiating loading process')
+
+load_to_csv(df2,csv_path)
+log_progress('Data saved to CSV file')
+
+log_progress('SQL connection initiated')
+
+load_to_db(sql_connection,df2,table_name)
+log_progress('Data loaded to Database as a table. Executing queries')
+
+run_queries(query_statement,sql_connection)
+log_progress(Process Complete)
+
+ 
