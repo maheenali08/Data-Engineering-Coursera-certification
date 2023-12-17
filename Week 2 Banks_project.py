@@ -36,15 +36,12 @@ def extract(url,table_attribs):
                       
     return df
     
-def transform():
+def transform(df,csv_path):
+    exchange_rate=pd.read_csv(csv_path)
+    exchange_rate=exchange_rate.set_index('Currency').to_dict()['Rate']
     df['MC_GBP_Billion'] = [np.round(x*exchange_rate['GBP'],2) for x in df['MC_USD_Billion']]
     df['MC_EUR_Billion'] = [np.round(x*exchange_rate['GBP'],2) for x in df['MC_USD_Billion']]
     df['MC_INR_Billion'] = [np.round(x*exchange_rate['GBP'],2) for x in df['MC_USD_Billion']]
-
-    GDP_list = df["GDP_USD_millions"].tolist()
-    GDP_list = [float("".join(x.split(','))) for x in GDP_list]
-    GDP_list = [np.round(x/1000,2) for x in GDP_list]
-    df["GDP_USD_millions"] = GDP_list
     df=df.rename(columns = {"GDP_USD_millions":"GDP_USD_billions"})
     return df
 
